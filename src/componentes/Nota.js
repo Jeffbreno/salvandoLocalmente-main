@@ -25,13 +25,14 @@ const styleFunction = (cor) =>
       marginBottom: 8,
       borderTopWidth: 5,
       borderColor: cor,
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.23,
-      shadowRadius: 2.62,
+      boxShadow: "0px 2px 2.62px rgba(0, 0, 0, 0.23)",
+      // shadowColor: "#000",
+      // shadowOffset: {
+      //   width: 0,
+      //   height: 2,
+      // },
+      // shadowOpacity: 0.23,
+      // shadowRadius: 2.62,
       elevation: 4,
     },
     titulo: {

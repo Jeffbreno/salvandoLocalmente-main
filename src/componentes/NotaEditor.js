@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { Modal, View, Text, TextInput, Pressable, StyleSheet, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function NotaEditor() {
@@ -33,41 +33,49 @@ export default function NotaEditor() {
             <View style={estilos.modal}>
               <Text style={estilos.modalTitulo}>Criar nota</Text>
               <Text style={estilos.modalSubTitulo}>Conteúdo da nota</Text>
-              <TextInput
-                style={estilos.modalInput}
-                multiline={true}
-                numberOfLines={3}
-                onChangeText={(novoTexto) => setTexto(novoTexto)}
-                placeholder="Digite aqui seu lembrete"
-                value={texto}
-              />
+              <TextInput style={estilos.modalInput} multiline={true} rows={3} onChangeText={(novoTexto) => setTexto(novoTexto)} placeholder="Digite aqui seu lembrete" value={texto} />
               <View style={estilos.modalBotoes}>
-                <TouchableOpacity
-                  style={estilos.modalBotaoSalvar}
+                <Pressable
+                  style={({ pressed }) => [
+                    {
+                      backgroundColor: pressed ? "#2ea805" : "#2ea805",
+                    },
+                    estilos.modalBotaoSalvar,
+                  ]}
                   onPress={() => {
                     salvaNota();
                   }}>
                   <Text style={estilos.modalBotaoTexto}>Salvar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={estilos.modalBotaoCancelar}
+                </Pressable>
+                <Pressable
+                  style={({ pressed }) => [
+                    {
+                      backgroundColor: pressed ? "#057fa8" : "#d62a18",
+                    },
+                    estilos.modalBotaoCancelar,
+                  ]}
                   onPress={() => {
                     setModalVisivel(false);
                   }}>
                   <Text style={estilos.modalBotaoTexto}>Cancelar</Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </View>
           </ScrollView>
         </View>
       </Modal>
-      <TouchableOpacity
+      <Pressable
         onPress={() => {
           setModalVisivel(true);
         }}
-        style={estilos.adicionarMemo}>
+        style={({ pressed }) => [
+          {
+            backgroundColor: pressed ? "#57ca3a" : "#54ba32",
+          },
+          estilos.adicionarMemo,
+        ]}>
         <Text style={estilos.adicionarMemoTexto}>+</Text>
-      </TouchableOpacity>
+      </Pressable>
     </>
   );
 }
@@ -87,13 +95,14 @@ const estilos = StyleSheet.create({
     marginHorizontal: 16,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 5,
-    },
-    shadowOpacity: 0.34,
-    shadowRadius: 6.27,
+    boxShadow: "0px 5px 6.27px rgba(0, 0, 0, 0.34)",
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 5,
+    // },
+    // shadowOpacity: 0.34,
+    // shadowRadius: 6.27,
     elevation: 10,
   },
   modalTitulo: {
@@ -158,13 +167,14 @@ const estilos = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     right: 0,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
+    boxShadow: "0px 2px 2.62px rgba(0, 0, 0, 0.23)",
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.23,
+    // shadowRadius: 2.62,
     elevation: 4,
   },
   adicionarMemoTexto: {
