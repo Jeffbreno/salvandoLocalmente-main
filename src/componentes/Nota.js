@@ -1,14 +1,14 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-export function Nota() {
+export function Nota({ item }) {
   const categorias = { Pessoal: "#FF924F", Outros: "#00911F", Trabalho: "#2F71EB" };
   const style = styleFunction(categorias["Pessoal"]);
 
   return (
     <View style={style.cartao}>
       <Text style={style.texto} numberOfLines={5}>
-        Lorem ipsum
+        {item[1]}
       </Text>
     </View>
   );
@@ -26,13 +26,6 @@ const styleFunction = (cor) =>
       borderTopWidth: 5,
       borderColor: cor,
       boxShadow: "0px 2px 2.62px rgba(0, 0, 0, 0.23)",
-      // shadowColor: "#000",
-      // shadowOffset: {
-      //   width: 0,
-      //   height: 2,
-      // },
-      // shadowOpacity: 0.23,
-      // shadowRadius: 2.62,
       elevation: 4,
     },
     titulo: {

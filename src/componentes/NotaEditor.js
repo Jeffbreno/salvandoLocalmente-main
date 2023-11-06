@@ -2,22 +2,38 @@ import React, { useState } from "react";
 import { Modal, View, Text, TextInput, Pressable, StyleSheet, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function NotaEditor() {
+export default function NotaEditor({ mostraNotas }) {
   const [texto, setTexto] = useState("");
   const [modalVisivel, setModalVisivel] = useState(false);
 
   async function salvaNota() {
+    const novoId = await geraId();
     const umaNota = {
-      id: "1",
+      id: novoId.toString(),
       texto: texto,
     };
+    console.log(umaNota);
     await AsyncStorage.setItem(umaNota.id, umaNota.texto);
-    mostraNota();
+    mostraNotas();
   }
 
-  async function mostraNota() {
-    console.log(await AsyncStorage.getItem("1"));
+  async function geraId() {
+    const todasChaves = await AsyncStorage.getAllKeys();
+    if (todasChaves <= 0) {
+      return 1;
+    }
+    return todasChaves.length + 1;
   }
+
+  // Função para limpar a lista no AsyncStorage
+  const limparListaNoAsyncStorage = async () => {
+    try {
+      await AsyncStorage.clear();
+      console.log("Lista no AsyncStorage foi limpa com sucesso.");
+    } catch (error) {
+      console.error("Erro ao limpar a lista no AsyncStorage:", error);
+    }
+  };
 
   return (
     <>
@@ -59,6 +75,18 @@ export default function NotaEditor() {
                   }}>
                   <Text style={estilos.modalBotaoTexto}>Cancelar</Text>
                 </Pressable>
+                <Pressable
+                  style={({ pressed }) => [
+                    {
+                      backgroundColor: pressed ? "#057fa8" : "#d62a18",
+                    },
+                    estilos.modalBotaoCancelar,
+                  ]}
+                  onPress={() => {
+                    limparListaNoAsyncStorage();
+                  }}>
+                  <Text style={estilos.modalBotaoTexto}>Limpar Lista</Text>
+                </Pressable>
               </View>
             </View>
           </ScrollView>
@@ -96,13 +124,6 @@ const estilos = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
     boxShadow: "0px 5px 6.27px rgba(0, 0, 0, 0.34)",
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 5,
-    // },
-    // shadowOpacity: 0.34,
-    // shadowRadius: 6.27,
     elevation: 10,
   },
   modalTitulo: {
