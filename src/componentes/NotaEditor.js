@@ -30,6 +30,7 @@ export default function NotaEditor({ mostraNotas }) {
     try {
       await AsyncStorage.clear();
       console.log("Lista no AsyncStorage foi limpa com sucesso.");
+      mostraNotas();
     } catch (error) {
       console.error("Erro ao limpar a lista no AsyncStorage:", error);
     }
@@ -52,36 +53,21 @@ export default function NotaEditor({ mostraNotas }) {
               <TextInput style={estilos.modalInput} multiline={true} rows={3} onChangeText={(novoTexto) => setTexto(novoTexto)} placeholder="Digite aqui seu lembrete" value={texto} />
               <View style={estilos.modalBotoes}>
                 <Pressable
-                  style={({ pressed }) => [
-                    {
-                      backgroundColor: pressed ? "#2ea805" : "#2ea805",
-                    },
-                    estilos.modalBotaoSalvar,
-                  ]}
+                  style={estilos.modalBotaoSalvar}
                   onPress={() => {
                     salvaNota();
                   }}>
                   <Text style={estilos.modalBotaoTexto}>Salvar</Text>
                 </Pressable>
                 <Pressable
-                  style={({ pressed }) => [
-                    {
-                      backgroundColor: pressed ? "#057fa8" : "#d62a18",
-                    },
-                    estilos.modalBotaoCancelar,
-                  ]}
+                  style={estilos.modalBotaoCancelar}
                   onPress={() => {
                     setModalVisivel(false);
                   }}>
                   <Text style={estilos.modalBotaoTexto}>Cancelar</Text>
                 </Pressable>
                 <Pressable
-                  style={({ pressed }) => [
-                    {
-                      backgroundColor: pressed ? "#057fa8" : "#d62a18",
-                    },
-                    estilos.modalBotaoCancelar,
-                  ]}
+                  style={estilos.modalBotaoDeletar}
                   onPress={() => {
                     limparListaNoAsyncStorage();
                   }}>
