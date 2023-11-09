@@ -1,40 +1,48 @@
+import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
 import { Modal, View, Text, TextInput, Pressable, StyleSheet, ScrollView } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { addNota } from "../servicos/Notas";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function NotaEditor({ mostraNotas }) {
+  const [titulo, setTitulo] = useState("");
+  const [categoria, setCategoria] = useState("Pessoal");
   const [texto, setTexto] = useState("");
   const [modalVisivel, setModalVisivel] = useState(false);
 
   async function salvaNota() {
-    const novoId = await geraId();
+    // const novoId = await geraId();
     const umaNota = {
-      id: novoId.toString(),
+      // id: novoId.toString(),
+      titulo: titulo,
+      categoria: categoria,
       texto: texto,
     };
-    console.log(umaNota);
-    await AsyncStorage.setItem(umaNota.id, umaNota.texto);
+
+    const resposta = await addNota(umaNota);
+    console.log("resposta :" + resposta);
+    // // await AsyncStorage.setItem(umaNota.id, umaNota.texto);
     mostraNotas();
   }
 
-  async function geraId() {
-    const todasChaves = await AsyncStorage.getAllKeys();
-    if (todasChaves <= 0) {
-      return 1;
-    }
-    return todasChaves.length + 1;
-  }
+  // async function geraId() {
+  //   const todasChaves = await AsyncStorage.getAllKeys();
+  //   if (todasChaves <= 0) {
+  //     return 1;
+  //   }
+  //   return todasChaves.length + 1;
+  // }
 
   // Função para limpar a lista no AsyncStorage
-  const limparListaNoAsyncStorage = async () => {
-    try {
-      await AsyncStorage.clear();
-      console.log("Lista no AsyncStorage foi limpa com sucesso.");
-      mostraNotas();
-    } catch (error) {
-      console.error("Erro ao limpar a lista no AsyncStorage:", error);
-    }
-  };
+  // const limparListaNoAsyncStorage = async () => {
+  //   try {
+  //     // await AsyncStorage.clear();
+  //     console.log("Lista no AsyncStorage foi limpa com sucesso.");
+  //     mostraNotas();
+  //   } catch (error) {
+  //     console.error("Erro ao limpar a lista no AsyncStorage:", error);
+  //   }
+  // };
 
   return (
     <>
@@ -49,7 +57,16 @@ export default function NotaEditor({ mostraNotas }) {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={estilos.modal}>
               <Text style={estilos.modalTitulo}>Criar nota</Text>
-              <Text style={estilos.modalSubTitulo}>Conteúdo da nota</Text>
+              <Text style={estilos.modalSubTitulo}>Título da Nota</Text>
+              <TextInput style={estilos.modalInput} onChangeText={(novoTitulo) => setTitulo(novoTitulo)} placeholder="Digite um titulo" value={titulo} />
+              <Text style={estilos.modalSubTitulo}>Categoria</Text>
+              <View style={estilos.modalPicker}>
+                <Picker selectedValue={categoria} onValueChange={(novaCategoria) => setCategoria(novaCategoria)}>
+                  <Picker.Item label="Pessoal" value="Pessoal" />
+                  <Picker.Item label="Trabalho" value="Trabalho" />
+                  <Picker.Item label="Outros" value="Outros" />
+                </Picker>
+              </View>
               <TextInput style={estilos.modalInput} multiline={true} rows={3} onChangeText={(novoTexto) => setTexto(novoTexto)} placeholder="Digite aqui seu lembrete" value={texto} />
               <View style={estilos.modalBotoes}>
                 <Pressable
@@ -66,28 +83,23 @@ export default function NotaEditor({ mostraNotas }) {
                   }}>
                   <Text style={estilos.modalBotaoTexto}>Cancelar</Text>
                 </Pressable>
-                <Pressable
+                {/* <Pressable
                   style={estilos.modalBotaoDeletar}
                   onPress={() => {
                     limparListaNoAsyncStorage();
                   }}>
                   <Text style={estilos.modalBotaoTexto}>Limpar Lista</Text>
-                </Pressable>
+                </Pressable> */}
               </View>
             </View>
           </ScrollView>
         </View>
       </Modal>
       <Pressable
+        style={estilos.adicionarMemo}
         onPress={() => {
           setModalVisivel(true);
-        }}
-        style={({ pressed }) => [
-          {
-            backgroundColor: pressed ? "#57ca3a" : "#54ba32",
-          },
-          estilos.adicionarMemo,
-        ]}>
+        }}>
         <Text style={estilos.adicionarMemoTexto}>+</Text>
       </Pressable>
     </>
