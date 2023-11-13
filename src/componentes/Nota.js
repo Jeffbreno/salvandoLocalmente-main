@@ -7,8 +7,8 @@ export function Nota({ item }) {
 
   return (
     <View style={estilos.cartao}>
-      <Text style={estilos.titulo}>item.titulo</Text>
-      <Text style={estilos.categoria}>item.categoria</Text>
+      <Text style={estilos.titulo}>{item.titulo}</Text>
+      <Text style={estilos.categoria}>{item.categoria}</Text>
       <Text style={estilos.texto} numberOfLines={5}>
         {item.texto}
       </Text>

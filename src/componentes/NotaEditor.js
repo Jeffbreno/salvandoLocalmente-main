@@ -19,8 +19,7 @@ export default function NotaEditor({ mostraNotas }) {
       texto: texto,
     };
 
-    const resposta = await addNota(umaNota);
-    console.log("resposta :" + resposta);
+    await addNota(umaNota);
     // // await AsyncStorage.setItem(umaNota.id, umaNota.texto);
     mostraNotas();
   }
