@@ -33,6 +33,28 @@ export async function addNota(nota) {
   });
 }
 
+export async function updateNota(nota) {
+  return new Promise((resolve, reject) => {
+    db.transaction((transaction) => {
+      transaction.executeSql("UPDATE Notas SET titulo = ?, categoria = ?, texto = ? WHERE id = ?;", [nota.titulo, nota.categoria, nota.texto, nota.id], 
+      console.log("Nota atualizada com sucesso"),
+      resolve("Nota atualizada com sucesso"), 
+      (_, error) => reject(error));
+    });
+  });
+}
+
+export async function deleteNota(nota) {
+  return new Promise((resolve, reject) => {
+    db.transaction((transaction) => {
+      transaction.executeSql("DELETE FROM Notas WHERE id = ?;", [nota.id], 
+      console.log("Nota excluída com sucesso"),
+      resolve("Nota excluída com sucesso"), 
+      (_, error) => reject(error));
+    });
+  });
+}
+
 export async function fetchNotes() {
   return new Promise((resolve) => {
     db.transaction((transaction) => {

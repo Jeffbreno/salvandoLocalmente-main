@@ -6,12 +6,13 @@ import { Nota } from "./src/componentes/Nota";
 import { createTable, fetchNotes } from "./src/servicos/Notas";
 
 export default function App() {
-  const [notas, setNotas] = useState([]);
-
   useEffect(() => {
     createTable();
     mostraNotas(); // Carrega as notas ao inicializar o componente
   }, []);
+
+  const [notas, setNotas] = useState([]);
+  const [notaSelecionada, setNotaSelecionada] = useState({});
 
   async function mostraNotas() {
     const todasNotas = await fetchNotes();
@@ -26,8 +27,8 @@ export default function App() {
 
   return (
     <SafeAreaView style={estilos.container}>
-      <FlatList data={notas} renderItem={(nota) => <Nota {...nota} />} keyExtractor={(nota) => nota.id} />
-      <NotaEditor mostraNotas={mostraNotas} />
+      <FlatList data={notas} renderItem={(nota) => <Nota {...nota} setNotaSelecionada={setNotaSelecionada} />} keyExtractor={(nota) => nota.id} />
+      <NotaEditor mostraNotas={mostraNotas} notaSelecionada={notaSelecionada} setNotaSelecionada={setNotaSelecionada} />
       <StatusBar />
     </SafeAreaView>
   );

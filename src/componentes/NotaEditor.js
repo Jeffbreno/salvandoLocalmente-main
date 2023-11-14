@@ -1,47 +1,61 @@
 import { Picker } from "@react-native-picker/picker";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, View, Text, TextInput, Pressable, StyleSheet, ScrollView } from "react-native";
-import { addNota } from "../servicos/Notas";
+import { addNota, updateNota } from "../servicos/Notas";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function NotaEditor({ mostraNotas }) {
+export default function NotaEditor({ mostraNotas, notaSelecionada, setNotaSelecionada }) {
+  useEffect(() => {
+    if (notaSelecionada.id) {
+      preencherModal();
+      setModalVisivel(true);
+      setNotaParaAtualizar(true);
+      return;
+    }
+    setNotaParaAtualizar(false);
+  }, [notaSelecionada]);
+
   const [titulo, setTitulo] = useState("");
   const [categoria, setCategoria] = useState("Pessoal");
   const [texto, setTexto] = useState("");
   const [modalVisivel, setModalVisivel] = useState(false);
+  const [notaParaAtualizar, setNotaParaAtualizar] = useState(false);
 
   async function salvaNota() {
-    // const novoId = await geraId();
     const umaNota = {
-      // id: novoId.toString(),
       titulo: titulo,
       categoria: categoria,
       texto: texto,
     };
 
     await addNota(umaNota);
-    // // await AsyncStorage.setItem(umaNota.id, umaNota.texto);
     mostraNotas();
   }
 
-  // async function geraId() {
-  //   const todasChaves = await AsyncStorage.getAllKeys();
-  //   if (todasChaves <= 0) {
-  //     return 1;
-  //   }
-  //   return todasChaves.length + 1;
-  // }
+  function preencherModal() {
+    setTitulo(notaSelecionada.titulo);
+    setCategoria(notaSelecionada.categoria);
+    setTexto(notaSelecionada.texto);
+  }
 
-  // Função para limpar a lista no AsyncStorage
-  // const limparListaNoAsyncStorage = async () => {
-  //   try {
-  //     // await AsyncStorage.clear();
-  //     console.log("Lista no AsyncStorage foi limpa com sucesso.");
-  //     mostraNotas();
-  //   } catch (error) {
-  //     console.error("Erro ao limpar a lista no AsyncStorage:", error);
-  //   }
-  // };
+  function limpaModal() {
+    setTitulo("");
+    setCategoria("Pessoa");
+    setTexto("");
+    setNotaSelecionada({});
+    setModalVisivel(false);
+  }
+
+  async function modificaNota() {
+    const umaNota = {
+      titulo: titulo,
+      categoria: categoria,
+      texto: texto,
+      id: notaSelecionada.id,
+    };
+    await updateNota(umaNota);
+    mostraNotas();
+  }
 
   return (
     <>
@@ -71,24 +85,17 @@ export default function NotaEditor({ mostraNotas }) {
                 <Pressable
                   style={estilos.modalBotaoSalvar}
                   onPress={() => {
-                    salvaNota();
+                    notaParaAtualizar ? modificaNota() : salvaNota();
                   }}>
                   <Text style={estilos.modalBotaoTexto}>Salvar</Text>
                 </Pressable>
                 <Pressable
                   style={estilos.modalBotaoCancelar}
                   onPress={() => {
-                    setModalVisivel(false);
+                    limpaModal();
                   }}>
                   <Text style={estilos.modalBotaoTexto}>Cancelar</Text>
                 </Pressable>
-                {/* <Pressable
-                  style={estilos.modalBotaoDeletar}
-                  onPress={() => {
-                    limparListaNoAsyncStorage();
-                  }}>
-                  <Text style={estilos.modalBotaoTexto}>Limpar Lista</Text>
-                </Pressable> */}
               </View>
             </View>
           </ScrollView>
@@ -186,13 +193,6 @@ const estilos = StyleSheet.create({
     bottom: 0,
     right: 0,
     boxShadow: "0px 2px 2.62px rgba(0, 0, 0, 0.23)",
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.23,
-    // shadowRadius: 2.62,
     elevation: 4,
   },
   adicionarMemoTexto: {
