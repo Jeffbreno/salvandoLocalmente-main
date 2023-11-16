@@ -1,7 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
 import React, { useEffect, useState } from "react";
 import { Modal, View, Text, TextInput, Pressable, StyleSheet, ScrollView } from "react-native";
-import { addNota, updateNota } from "../servicos/Notas";
+import { addNota, deleteNota, updateNota } from "../servicos/Notas";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function NotaEditor({ mostraNotas, notaSelecionada, setNotaSelecionada }) {
@@ -30,6 +30,7 @@ export default function NotaEditor({ mostraNotas, notaSelecionada, setNotaSeleci
 
     await addNota(umaNota);
     mostraNotas();
+    limpaModal();
   }
 
   function preencherModal() {
@@ -40,7 +41,7 @@ export default function NotaEditor({ mostraNotas, notaSelecionada, setNotaSeleci
 
   function limpaModal() {
     setTitulo("");
-    setCategoria("Pessoa");
+    setCategoria("Pessoal");
     setTexto("");
     setNotaSelecionada({});
     setModalVisivel(false);
@@ -55,6 +56,12 @@ export default function NotaEditor({ mostraNotas, notaSelecionada, setNotaSeleci
     };
     await updateNota(umaNota);
     mostraNotas();
+  }
+
+  async function removeNota() {
+    await deleteNota(notaSelecionada);
+    mostraNotas();
+    limpaModal();
   }
 
   return (
@@ -89,6 +96,17 @@ export default function NotaEditor({ mostraNotas, notaSelecionada, setNotaSeleci
                   }}>
                   <Text style={estilos.modalBotaoTexto}>Salvar</Text>
                 </Pressable>
+                {notaParaAtualizar ? (
+                  <Pressable
+                    style={estilos.modalBotaoDeletar}
+                    onPress={() => {
+                      removeNota();
+                    }}>
+                    <Text style={estilos.modalBotaoTexto}>Deletar</Text>
+                  </Pressable>
+                ) : (
+                  <></>
+                )}
                 <Pressable
                   style={estilos.modalBotaoCancelar}
                   onPress={() => {
